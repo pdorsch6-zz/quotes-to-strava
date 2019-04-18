@@ -1,0 +1,25 @@
+{
+  "name": "quotes-to-strava",
+  "version": "1.0.0",
+  "description": "takes fitbit workouts and uplaods to strava with quotes",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pdorsch6/quotes-to-strava.git"
+  },
+  "keywords": [
+    "quote",
+    "fitbit",
+    "strava",
+    "bike"
+  ],
+  "author": "Paul Dorsch",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pdorsch6/quotes-to-strava/issues"
+  },
+  "homepage": "https://github.com/pdorsch6/quotes-to-strava#readme"
+}
