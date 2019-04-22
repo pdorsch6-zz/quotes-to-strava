@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux';
 import * as actions from '../actions';
 import AddQuote from './AddQuote';
 import QuoteTable from './QuoteTable';
-import {hot} from "react-hot-loader";
 
 class Quotes extends Component {
 
@@ -27,7 +26,7 @@ class Quotes extends Component {
       if (error) {
         return (
           <>
-            <p> {error} </p>
+            <p> Error </p>
           </>
         );
       }
@@ -62,9 +61,9 @@ const mapDispatchToProps = dispatch => {
 	return bindActionCreators({ ...actions.quotes }, dispatch);
 };
 
-export default hot(withRouter(
+export default withRouter(
 	connect(
 		mapStateToProps,
 		mapDispatchToProps
-	))(Quotes)
+	)(Quotes)
 );
