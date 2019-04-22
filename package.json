@@ -5,7 +5,7 @@
   "main": "backend/server.js",
   "scripts": {
     "test": "test",
-    "frontend": "webpack -d --watch --config ./frontend/webpack.config.js --mode development",
+    "frontend": "webpack --watch --config ./frontend/webpack.config.js --mode development",
     "backend": "nodemon server.js",
     "dev": "concurrently -k \"npm run frontend\" \"npm run backend\""
   },
