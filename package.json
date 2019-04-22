@@ -4,7 +4,9 @@
   "description": "takes fitbit workouts and uplaods to strava with quotes",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "frontend": "webpack -d --watch --config frontend/webpack.config.js",
+    "dev": "webpack-dev-server --mode development"
   },
   "repository": {
     "type": "git",
@@ -21,5 +23,22 @@
   "bugs": {
     "url": "https://github.com/pdorsch6/quotes-to-strava/issues"
   },
-  "homepage": "https://github.com/pdorsch6/quotes-to-strava#readme"
+  "homepage": "https://github.com/pdorsch6/quotes-to-strava#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.1.0",
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.2",
+    "css-loader": "^1.0.0",
+    "style-loader": "^0.23.0",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.3.1"
+  },
+  "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-hot-loader": "^4.8.4"
+  }
 }
