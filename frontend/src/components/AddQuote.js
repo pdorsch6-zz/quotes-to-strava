@@ -13,8 +13,6 @@ import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 import CustomSnackbar from './CustomSnackbar';
 
-const REACT_APP_DB_HOST = process.env.REACT_APP_DB_HOST;
-
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -84,7 +82,7 @@ class AddQuote extends Component {
         this.handleClickClose();
 
         try {
-            let authorResponse = await fetch(`${REACT_APP_DB_HOST}/api/author`, {
+            let authorResponse = await fetch(`/api/author`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -94,7 +92,7 @@ class AddQuote extends Component {
                 })
             });
 
-            let categoryResponse = await fetch(`${REACT_APP_DB_HOST}/api/category`, {
+            let categoryResponse = await fetch(`/api/category`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -111,7 +109,7 @@ class AddQuote extends Component {
                 authorResponse.status === 400) &&
                 (categoryResponse.status === 200 ||
                 categoryResponse.status === 400)) {
-                let quoteResponse = await fetch(`${REACT_APP_DB_HOST}/api/quote`, {
+                let quoteResponse = await fetch(`/api/quote`, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',

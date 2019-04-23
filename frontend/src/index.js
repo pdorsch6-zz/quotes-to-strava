@@ -7,11 +7,6 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 import Quotes from './components/Quotes';
 
-// const REACT_APP_DB_HOST = process.env.REACT_APP_DB_HOST;
-// console.log(REACT_APP_DB_HOST);
-
-console.log("REACHED");
-
 ReactDOM.render(
   <Provider store={store}>
   <Router>
