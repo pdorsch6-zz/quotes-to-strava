@@ -7,6 +7,7 @@ import * as actions from '../actions';
 import AddQuote from './AddQuote';
 import QuoteTable from './QuoteTable';
 
+
 class Quotes extends Component {
 
     constructor(props) {
@@ -31,7 +32,7 @@ class Quotes extends Component {
         );
       }
       return (
-        <>
+        <div>
           <div>
             <AddQuote />
           </div>
@@ -44,7 +45,7 @@ class Quotes extends Component {
             }
           </div>
           <br />
-        </>
+        </div>
       );
     }
 }
