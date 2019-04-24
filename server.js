@@ -32,15 +32,18 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 require('./backend/api/models/Quote');
 require('./backend/api/models/QuoteCategory');
-require('./backend/api/models/Author')
+require('./backend/api/models/Author');
+require('./backend/api/models/Token');
 
 const quoteRouter = require("./backend/api/routes/quote");
 const categoryRouter = require("./backend/api/routes/quoteCategory");
 const authorRouter = require("./backend/api/routes/author");
+const tokenRouter = require("./backend/api/routes/token");
 
 app.use('/api/quote', quoteRouter);
 app.use('/api/category', categoryRouter);
 app.use('/api/author', authorRouter);
+app.use('/api/token', tokenRouter);
 
 require('./backend/api/routing')(app);
 

@@ -1,5 +1,5 @@
 
-async function fetchData(url, settings) {
+export async function fetchData(url, settings) {
     if(!url) throw new Error('No url found');
     try {
         let response = await fetch(url, settings);

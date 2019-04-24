@@ -37,26 +37,26 @@ class App extends Component {
       <div>
         <Tabs>
           <TabList>
-            <Tab>Quotes</Tab>
             <Tab>Fitbit Activities</Tab>
+            <Tab>Quotes</Tab>
           </TabList>
           <TabPanel className={classes.base}>
             <div className={classes.root}>
               <Grid container spacing={24}>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
-                    <Quotes />
+                    <Activities />
                   </Paper>
                 </Grid>
               </Grid>
             </div>
           </TabPanel>
           <TabPanel className={classes.base}>
-          <div className={classes.root}>
+            <div className={classes.root}>
               <Grid container spacing={24}>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
-                    <Activities />
+                    <Quotes />
                   </Paper>
                 </Grid>
               </Grid>
