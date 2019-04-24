@@ -61,4 +61,4 @@ typings/
 .next
 .DS_Store
 package-lock.json
-frontend/public/bundle.js
+bundle.js
