@@ -39,6 +39,7 @@ class ActivityTable extends Component {
 
   render() {
     let activityList = this.props.activityList;
+    let activityJson = activityList ? JSON.parse(activityList) : [];
     return (
       <Paper>
         <Table>
@@ -51,12 +52,11 @@ class ActivityTable extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {activityList.map((activity, index) => <ActivityRow quote={activity} key={index} /> )}
+            {activityJson.map((activity, index) => <ActivityRow activity={activity} key={index} /> )}
           </TableBody>
         </Table>
       </Paper>
     );
   }
 }
-
 export default withStyles(styles)(ActivityTable);

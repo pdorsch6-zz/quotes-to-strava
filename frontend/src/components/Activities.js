@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Button from '@material-ui/core/Button';
 import { createAuthLink, getAccessRefresh, getAccessToken, getRefreshToken, refresh, activities } from '../utils/fitbit';
+import ActivityTable from "./ActivityTable";
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, "../../", '.env') });
 
@@ -35,7 +36,6 @@ class Activities extends Component {
         }
         await refresh(refreshToken.token);
         let activityList = await activities(accessToken.token);
-        console.log(typeof activityList);
 
         this.setState({ activityList: JSON.stringify(activityList) });
         // console.log(accessToken.token);
@@ -50,13 +50,14 @@ class Activities extends Component {
 
     render() {
         let { authLink, activityList } = this.state;
-
+        debugger;
         return (
             <div>
-                <a href={ authLink }>Authorize with Fitbit</a>
-                <p>
-                    { activityList }
-                </p>
+                { activityList ?
+                  <ActivityTable activityList={activityList}/>
+                    :
+                  <a href={ authLink }>Authorize with Fitbit</a>
+                }
             </div>
         );
     }

@@ -155,7 +155,7 @@ export async function activities(access_token) {
         'Authorization': `Bearer ${access_token}`
       },
     });
-    return await activities.activities;;
+    return await activities.activities;
   } catch(err) {
     console.log(err);
     return false;
