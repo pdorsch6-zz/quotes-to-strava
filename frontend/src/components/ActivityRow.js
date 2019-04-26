@@ -4,6 +4,7 @@ import * as actions from '../actions';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import moment from 'moment';
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -33,16 +34,46 @@ const styles = theme => ({
 
 class ActivityRow extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      startTime: "",
+      duration: ""
+    };
+  }
+
+  componentDidMount() {
+    let activity = this.props.activity;
+
+    let startTime = activity.originalStartTime;
+    startTime = moment(startTime).format('ddd, MM/DD/YY, h:mm a');
+    let duration = this.msToTime(activity.activeDuration);
+
+    this.setState({ startTime, duration });
+  }
+
+  msToTime(s) {
+    var ms = s % 1000;
+    s = (s - ms) / 1000;
+    var secs = s % 60;
+    s = (s - secs) / 60;
+    var mins = s % 60;
+    var hrs = (s - mins) / 60;
+
+    return hrs + 'hr : ' + mins + 'm : ' + secs + 's';
+  }
 
   render() {
     let activity = this.props.activity;
+    let { startTime, duration } = this.state;
     return (
       <TableRow key={this.props.key}>
         <CustomTableCell component="th" scope="row">
           {activity.activityName}
         </CustomTableCell>
-        <CustomTableCell align="right">{activity.originalStartTime}</CustomTableCell>
-        <CustomTableCell align="right">{activity.activeDuration}</CustomTableCell>
+        <CustomTableCell align="right">{startTime}</CustomTableCell>
+        <CustomTableCell align="right">{duration}</CustomTableCell>
         <CustomTableCell align="right">
           {activity.distance ? activity.distance + " " + activity.distanceUnit : 'N/A'}
         </CustomTableCell>

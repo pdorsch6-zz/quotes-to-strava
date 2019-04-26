@@ -148,14 +148,23 @@ export async function activities(access_token) {
         offset: 0
       }
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-    let activities = await fetchData(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Bearer ${access_token}`
-      },
-    });
-    return await activities.activities;
+    let fullActivityList = [];
+    do {
+      let activities = await fetchData(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${access_token}`,
+          'Accept-Language': 'en_US'
+        },
+      });
+      activities.activities.forEach(function(activity) {
+        fullActivityList.push(activity);
+      });
+      url = activities.pagination.next || null;
+    } while (url);
+
+    return fullActivityList;
   } catch(err) {
     console.log(err);
     return false;
