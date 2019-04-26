@@ -5,12 +5,12 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import store from './store/store';
-import Quotes from './components/Quotes';
+import App from './App';
 
 ReactDOM.render(
   <Provider store={store}>
   <Router>
-    <Route path="/" exact component={Quotes} />
+    <Route path="/" exact component={App} />
   </Router>
   </Provider>
 , document.getElementById('app'));
