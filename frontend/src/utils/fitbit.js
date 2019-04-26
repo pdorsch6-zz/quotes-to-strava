@@ -142,7 +142,7 @@ export async function activities(access_token) {
   try {
     let url = new URL("https://api.fitbit.com/1/user/-/activities/list.json"),
       params = {
-        afterDate: '2019-01-01',
+        afterDate: '2019-04-01',
         sort: 'desc',
         limit: 20,
         offset: 0
@@ -169,6 +169,21 @@ export async function activities(access_token) {
     console.log(err);
     return false;
   }
+}
+
+export async function getTcx(logId) {
+  let url = `https://api.fitbit.com/1/user/-/activities/${logId}.tcx`;
+  let access_token = await getAccessToken();
+  access_token = access_token.token;
+  let tcx = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/vnd.garmin.tcx+xml',
+      'Authorization': `Bearer ${access_token}`,
+      'Accept-Language': 'en_US'
+    },
+  });
+  return await tcx.body;
 }
 
 export function createAuthLink() {

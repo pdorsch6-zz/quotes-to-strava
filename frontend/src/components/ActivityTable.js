@@ -46,9 +46,10 @@ class ActivityTable extends Component {
           <TableHead>
             <TableRow>
               <CustomTableCell>Activity</CustomTableCell>
-              <CustomTableCell align="right">Date</CustomTableCell>
-              <CustomTableCell align="right">Duration</CustomTableCell>
-              <CustomTableCell align="right">Distance</CustomTableCell>
+              <CustomTableCell>Date</CustomTableCell>
+              <CustomTableCell>Duration</CustomTableCell>
+              <CustomTableCell>Distance</CustomTableCell>
+              <CustomTableCell></CustomTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

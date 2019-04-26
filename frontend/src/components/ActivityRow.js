@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import moment from 'moment';
+import UploadToStrava from './UploadToStrava';
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -77,6 +78,7 @@ class ActivityRow extends Component {
         <CustomTableCell align="right">
           {activity.distance ? activity.distance + " " + activity.distanceUnit : 'N/A'}
         </CustomTableCell>
+        <CustomTableCell><UploadToStrava logId={activity.logId}/></CustomTableCell>
       </TableRow>
     );
   }
