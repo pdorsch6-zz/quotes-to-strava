@@ -13,8 +13,8 @@ const MONGO_PASS = encodeURIComponent(process.env.MONGODB_PASS);
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true }));
 app.use(express.static(path.join(__dirname, './frontend/public')));
 
 const dbRoute = `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@motivationcluster-3p32s.mongodb.net/test?retryWrites=true`;
@@ -39,11 +39,13 @@ const quoteRouter = require("./backend/api/routes/quote");
 const categoryRouter = require("./backend/api/routes/quoteCategory");
 const authorRouter = require("./backend/api/routes/author");
 const tokenRouter = require("./backend/api/routes/token");
+const tcxRouter = require("./backend/api/routes/tcx");
 
 app.use('/api/quote', quoteRouter);
 app.use('/api/category', categoryRouter);
 app.use('/api/author', authorRouter);
 app.use('/api/token', tokenRouter);
+app.use('/api/tcx', tcxRouter);
 
 require('./backend/api/routing')(app);
 

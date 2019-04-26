@@ -166,8 +166,7 @@ export async function activities(access_token) {
 
     return fullActivityList;
   } catch(err) {
-    console.log(err);
-    return false;
+    return [];
   }
 }
 
@@ -183,7 +182,7 @@ export async function getTcx(logId) {
       'Accept-Language': 'en_US'
     },
   });
-  return await tcx.body;
+  return await tcx.text();
 }
 
 export function createAuthLink() {

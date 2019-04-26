@@ -14,4 +14,24 @@ export async function fetchData(url, settings) {
         throw err;
     }
 }
+
+export async function createTcxFile(tcx, logId) {
+    try {
+        let refresh_response = await fetch(`/api/tcx/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                tcx_filename: logId + ".tcx",
+                tcx_file: tcx
+            })
+        });
+        let refresh = await refresh_response.json();
+        return refresh.token;
+    } catch(err) {
+        console.log(err);
+        return null;
+    }
+}
   

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Button from '@material-ui/core/Button';
 import { getTcx } from '../utils/fitbit';
+import { createTcxFile } from '../utils/Utilities';
 
 class UploadToStrava extends Component {
 
@@ -24,7 +25,7 @@ class UploadToStrava extends Component {
     let { logId } = this.state;
     console.log(logId);
     let tcx = await getTcx(logId);
-    console.log(tcx);
+    await createTcxFile(tcx, logId);
   }
 
   render() {
