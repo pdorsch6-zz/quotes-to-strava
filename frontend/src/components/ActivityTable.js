@@ -52,7 +52,12 @@ class ActivityTable extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {activityJson.map((activity, index) => <ActivityRow activity={activity} key={index} /> )}
+            {activityJson.map((activity, index) => {
+              if(activity.distance > 0) {
+                console.log(activity);
+                return <ActivityRow activity={activity} key={index} />;
+              }
+            })}
           </TableBody>
         </Table>
       </Paper>

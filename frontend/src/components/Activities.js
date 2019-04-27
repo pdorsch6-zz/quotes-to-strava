@@ -35,8 +35,8 @@ class Activities extends Component {
             this.setState({ authLink });
         }
         await refresh(refreshToken.token);
+
         accessToken = await getAccessToken();
-        refreshToken = await getRefreshToken();
         let activityList = await activities(accessToken.token);
 
         this.setState({ activityList: JSON.stringify(activityList) });
