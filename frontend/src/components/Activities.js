@@ -35,6 +35,8 @@ class Activities extends Component {
             this.setState({ authLink });
         }
         await refresh(refreshToken.token);
+        accessToken = await getAccessToken();
+        refreshToken = await getRefreshToken();
         let activityList = await activities(accessToken.token);
 
         this.setState({ activityList: JSON.stringify(activityList) });
@@ -50,7 +52,6 @@ class Activities extends Component {
 
     render() {
         let { authLink, activityList } = this.state;
-        debugger;
         return (
             <div>
                 { activityList ?
