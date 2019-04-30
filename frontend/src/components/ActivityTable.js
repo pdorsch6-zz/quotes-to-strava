@@ -55,7 +55,6 @@ class ActivityTable extends Component {
           <TableBody>
             {activityJson.map((activity, index) => {
               if(activity.distance > 0) {
-                console.log(activity);
                 return <ActivityRow activity={activity} key={index} />;
               }
             })}

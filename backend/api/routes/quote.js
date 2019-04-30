@@ -7,6 +7,7 @@ router.get('/all', controllers.quote.getAll);
 router.post('/', controllers.quote.create);
 router.delete('/:id', controllers.quote.deleteOne);
 router.put('/:id', controllers.quote.update);
+router.get('/random', controllers.quote.getRandom);
 
 
 module.exports = router

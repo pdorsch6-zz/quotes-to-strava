@@ -17,7 +17,7 @@ export async function fetchData(url, settings) {
 
 export async function createTcxFile(tcx, logId) {
     try {
-        let refresh_response = await fetch(`/api/tcx/`, {
+        let createTcx = await fetch(`/api/tcx/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -27,8 +27,33 @@ export async function createTcxFile(tcx, logId) {
                 tcx_file: tcx
             })
         });
-        let refresh = await refresh_response.json();
-        return refresh.token;
+        let tcx = await createTcx.json();
+        return tcx;
+    } catch(err) {
+        console.log(err);
+        return null;
+    }
+}
+
+export async function randomQuote(tcx, logId) {
+    try {
+        let quoteResp = await fetch(`/api/quote/random`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        let quoteJson = (await quoteResp.json()).quote;
+        let quote = quoteJson.quote;
+        let author = quoteJson.author.name;
+        author = author.toLowerCase()
+        .split(' ')
+        .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+        .join(' ');
+        
+        let quoteString = `"${quote}" - ${author}`;
+
+        return quoteString;
     } catch(err) {
         console.log(err);
         return null;
