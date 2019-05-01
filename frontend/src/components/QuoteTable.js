@@ -51,6 +51,7 @@ class QuoteTable extends Component {
                     <CustomTableCell>Quote</CustomTableCell>
                     <CustomTableCell align="right">Author</CustomTableCell>
                     <CustomTableCell align="right">Category</CustomTableCell>
+                    <CustomTableCell> </CustomTableCell>
                 </TableRow>
                 </TableHead>
                 <TableBody>

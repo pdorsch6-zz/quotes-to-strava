@@ -35,7 +35,7 @@ export async function createTcxFile(tcx, logId) {
     }
 }
 
-export async function randomQuote(tcx, logId) {
+export async function randomQuote() {
     try {
         let quoteResp = await fetch(`/api/quote/random`, {
             method: 'GET',
@@ -59,4 +59,13 @@ export async function randomQuote(tcx, logId) {
         return null;
     }
 }
+
+export async function updateQuote() {
+
+}
+
+export async function deleteQuote() {
+
+}
+
   

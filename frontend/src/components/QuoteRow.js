@@ -6,6 +6,7 @@ import * as actions from '../actions';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import ManipulateQuote from './ManipulateQuote';
 
 const CustomTableCell = withStyles(theme => ({
     head: {
@@ -45,6 +46,7 @@ class QuoteRow extends Component {
                 </CustomTableCell>
                 <CustomTableCell align="right">{quote.author ? quote.author.name : '---'}</CustomTableCell>
                 <CustomTableCell align="right">{quote.category ? quote.category.category : '---'}</CustomTableCell>
+                <CustomTableCell><ManipulateQuote quote={quote} /></CustomTableCell>
             </TableRow>
         );
     }
