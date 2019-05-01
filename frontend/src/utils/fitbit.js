@@ -147,7 +147,7 @@ async function activities(access_token) {
   try {
     let url = new URL("https://api.fitbit.com/1/user/-/activities/list.json"),
       params = {
-        afterDate: '2019-04-01',
+        afterDate: '2019-04-28',
         sort: 'desc',
         limit: 20,
         offset: 0
@@ -177,8 +177,8 @@ async function activities(access_token) {
 
 async function getUser(access_token) {
   try {
-    let url = new URL("https://api.fitbit.com/1/user/-/profile.json");
-    let user = await fetchData(url, {
+    let url = "https://api.fitbit.com/1/user/-/profile.json";
+    let user_response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -186,9 +186,13 @@ async function getUser(access_token) {
         'Accept-Language': 'en_US'
       },
     });
+    if(!user_response.ok) {
+      return null;
+    }
+    let user = await user_response.json();
     return user.user;
   } catch(err) {
-    console.log(await err.json());
+    // console.log(await err.json());
     return null;
   }
 }
@@ -205,7 +209,7 @@ async function getTcx(logId) {
       'Accept-Language': 'en_US'
     },
   });
-  return await tcx.text();
+  return await tcx.blob();
 }
 
 function createAuthLink() {

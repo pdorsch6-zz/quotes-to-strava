@@ -147,6 +147,9 @@ async function getUser(access) {
         'Authorization': `Bearer ${access}`
       },
     });
+    if(!user_response.ok) {
+      return null;
+    }
     let user = await user_response.json();
     return user;
   } catch(err) {
@@ -181,4 +184,32 @@ async function refresh(refresh_token) {
   }
 }
 
-export default { stravaAccessUrl, getTokens, getAccessToken, getRefreshToken, getUser, refresh };
+async function uploadTcx(tcx, title, description) {
+  let access = (await getAccessToken()).token;
+  let formData = new FormData();
+  formData.append('file', tcx);
+  formData.append('name', title);
+  formData.append('description', description);
+  formData.append('trainer', 'false');
+  formData.append('commute', 'false');
+  formData.append('data_type', 'tcx');
+  let url = "https://www.strava.com/api/v3/uploads";
+  let settings = {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      // 'Content-Type': 'application/octet-stream',
+      'Authorization': `Bearer ${access}`
+    },
+    body: formData
+  };
+  try {
+    let response = await fetch(url, settings);
+    return response;
+  } catch(err) {
+    console.log(err);
+    return null;
+  }
+}
+
+export default { stravaAccessUrl, getTokens, getAccessToken, getRefreshToken, getUser, refresh, uploadTcx };

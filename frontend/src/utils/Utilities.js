@@ -27,8 +27,8 @@ export async function createTcxFile(tcx, logId) {
                 tcx_file: tcx
             })
         });
-        let tcx = await createTcx.json();
-        return tcx;
+        let tcx_response = await createTcx.json();
+        return tcx_response;
     } catch(err) {
         console.log(err);
         return null;

@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
 import FitbitService from '../utils/fitbit';
+import StravaService from '../utils/strava';
 import { createTcxFile, randomQuote } from '../utils/Utilities';
 
 const path = require('path');
@@ -36,7 +37,8 @@ class UploadToStrava extends Component {
       token: "",
       open: false,
       uploadError: "",
-      title: ""
+      title: "",
+      description: ""
     }
 
     this.randomQuote = this.randomQuote.bind(this);
@@ -54,10 +56,14 @@ class UploadToStrava extends Component {
 
   async uploadTcx() {
     if(this.validateToken()) {
-      let { logId } = this.state;
-      console.log(logId);
+      let { logId, title, description } = this.state;
       let tcx = await FitbitService.getTcx(logId);
-      await createTcxFile(tcx, logId);
+      // await createTcxFile(tcx, logId);
+      let filepath = path.join('../', `tcx_files/${logId}.tcx`);
+      // console.log(filepath);
+      // console.log(title);
+      // console.log(description);
+      await StravaService.uploadTcx(tcx, title, description);
       this.handleClickClose();
     } else {
       this.setState({uploadError: "Incorrect validation token"});
@@ -93,7 +99,7 @@ class UploadToStrava extends Component {
 
   render() {
     const { classes } = this.props;
-    let { uploadError, title } = this.state;
+    let { uploadError, title, description, token } = this.state;
     return (
       <>
       <Button variant="contained" color="primary" onClick={this.handleClickOpen}>
@@ -118,15 +124,26 @@ class UploadToStrava extends Component {
           </Button>
           <br/>
           <TextField
+            label="Description"
+            value={description}
+            multiline
+            fullWidth
+            onChange={e => this.onFieldChange('description',  e.target.value)}
+            className={classes.textField}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
             label="Validation Token"
+            value={token}
             onChange={e => this.onFieldChange('token',  e.target.value)}
             className={classes.textField}
             margin="normal"
             fullWidth
             variant="outlined"
           />
+          <div style={{color: 'red'}}>{uploadError}</div>
         </form>
-        <div style={{color: 'red'}}>{uploadError}</div>
         <DialogActions>
           <Button onClick={this.handleClickClose} color="secondary" variant="contained">
             Cancel

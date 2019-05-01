@@ -42,18 +42,14 @@ class Activities extends Component {
     }
 
     async authenticateStrava() {
-        var accessToken = await StravaService.getAccessToken();
-        var refreshToken = await StravaService.getRefreshToken();
+        let accessToken = await StravaService.getAccessToken();
+        let refreshToken = await StravaService.getRefreshToken();
         let stravaUser = await StravaService.getUser(accessToken.token);
-        if(stravaUser) {
-            this.setState({stravaUser, stravaAuthState: "authorized"});
-        } else {
-            if(await StravaService.refresh(refreshToken.token)) {
-                var accessToken = await StravaService.getAccessToken();
-                var refreshToken = await StravaService.getRefreshToken();
-                let stravaUser = await StravaService.getUser(accessToken.token);
-                this.setState({stravaUser, stravaAuthState: "authorized"});
-            }
+        if(!stravaUser) {
+            await StravaService.refresh(refreshToken.token);
+            accessToken = await StravaService.getAccessToken();
+            refreshToken = await StravaService.getRefreshToken();
+            stravaUser = await StravaService.getUser(accessToken.token);
         }
         if(!accessToken || !refreshToken) {
             let authLink = await StravaService.stravaAccessUrl();
@@ -61,23 +57,20 @@ class Activities extends Component {
         } else {
             let access = accessToken.token;
             let refresh = refreshToken.token;
+            this.setState({stravaUser, stravaAuthState: "authorized"});
             return { access, refresh }
         }
     }
 
     async authenticateFitbit() {
-        var accessToken = await FitbitService.getAccessToken();
-        var refreshToken = await FitbitService.getRefreshToken();
+        let accessToken = await FitbitService.getAccessToken();
+        let refreshToken = await FitbitService.getRefreshToken();
         let fitbitUser = await FitbitService.getUser(accessToken.token);
-        if(fitbitUser) {
-            this.setState({fitbitUser, fitbitAuthState: "authorized"});
-        } else {
-            if(await FitbitService.refresh(refreshToken.token)) {
-                var accessToken = await FitbitService.getAccessToken();
-                var refreshToken = await FitbitService.getRefreshToken();
-                let fitbitUser = await FitbitService.getUser(accessToken.token);
-                this.setState({fitbitUser, fitbitAuthState: "authorized"});
-            }
+        if(!fitbitUser) {
+            await FitbitService.refresh(refreshToken.token);
+            accessToken = await FitbitService.getAccessToken();
+            refreshToken = await FitbitService.getRefreshToken();
+            fitbitUser = await FitbitService.getUser(accessToken.token);
         }
         if(!accessToken || !refreshToken) {
             let authLink = await FitbitService.createAuthLink();
@@ -85,6 +78,7 @@ class Activities extends Component {
         } else {
             let access = accessToken.token;
             let refresh = refreshToken.token;
+            this.setState({fitbitUser, fitbitAuthState: "authorized"});
             return { access, refresh }
         }
     }
