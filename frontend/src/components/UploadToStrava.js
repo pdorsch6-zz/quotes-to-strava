@@ -58,11 +58,6 @@ class UploadToStrava extends Component {
     if(this.validateToken()) {
       let { logId, title, description } = this.state;
       let tcx = await FitbitService.getTcx(logId);
-      // await createTcxFile(tcx, logId);
-      let filepath = path.join('../', `tcx_files/${logId}.tcx`);
-      // console.log(filepath);
-      // console.log(title);
-      // console.log(description);
       await StravaService.uploadTcx(tcx, title, description);
       this.handleClickClose();
     } else {
