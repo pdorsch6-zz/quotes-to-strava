@@ -125,3 +125,19 @@ module.exports.update = (req, res) => {
             });
         });
 }
+
+module.exports.getRandom = (req, res) => {
+    Quote.countDocuments().then(count => {
+
+        var random = Math.floor(Math.random() * count)
+
+        Quote.findOne().skip(random)
+            .populate(['category', 'author'])
+            .then(result => {
+                return res.status(200).json({
+                    status: 'ok',
+                    quote: result
+                });
+          })
+      })
+}

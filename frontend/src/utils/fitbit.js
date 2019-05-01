@@ -7,7 +7,7 @@ const FITBIT_CLIENT_ID = process.env.FITBIT_CLIENT_ID;
 const FITBIT_CLIENT_SECRET = process.env.FITBIT_CLIENT_SECRET;
 
 
-export async function getAccessRefresh(code) {
+async function getAccessRefresh(code) {
 
     let url = new URL("https://api.fitbit.com/oauth2/token"),
       params = {
@@ -25,8 +25,13 @@ export async function getAccessRefresh(code) {
         'Authorization': `Basic ${btoa(FITBIT_CLIENT_ID + ':' + FITBIT_CLIENT_SECRET)}`
       },
     };
-    let response = await fetchData(url, settings);
+    try {
+      var response = await fetchData(url, settings);
+    } catch(err) {
+      return false;
+    }
     await updateAccessRefresh(response.access_token,  response.refresh_token);
+    return true;
 }
 
 async function updateAccessRefresh(access, refresh) {
@@ -83,7 +88,7 @@ async function updateAccessRefresh(access, refresh) {
   }
 }
 
-export async function getAccessToken() {
+async function getAccessToken() {
   try {
     let access_response = await fetch(`/api/token/access`, {
       method: 'GET',
@@ -99,7 +104,7 @@ export async function getAccessToken() {
   }
 }
 
-export async function getRefreshToken() {
+async function getRefreshToken() {
   try {
     let refresh_response = await fetch(`/api/token/refresh`, {
       method: 'GET',
@@ -115,7 +120,7 @@ export async function getRefreshToken() {
   }
 }
 
-export async function refresh(refresh_token) {
+async function refresh(refresh_token) {
   try {
     let url = new URL("https://api.fitbit.com/oauth2/token"),
       params = {
@@ -138,11 +143,11 @@ export async function refresh(refresh_token) {
   }
 }
 
-export async function activities(access_token) {
+async function activities(access_token) {
   try {
     let url = new URL("https://api.fitbit.com/1/user/-/activities/list.json"),
       params = {
-        afterDate: '2019-04-01',
+        afterDate: '2019-04-28',
         sort: 'desc',
         limit: 20,
         offset: 0
@@ -166,12 +171,33 @@ export async function activities(access_token) {
 
     return fullActivityList;
   } catch(err) {
-    console.log(err);
-    return false;
+    return [];
   }
 }
 
-export async function getTcx(logId) {
+async function getUser(access_token) {
+  try {
+    let url = "https://api.fitbit.com/1/user/-/profile.json";
+    let user_response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Bearer ${access_token}`,
+        'Accept-Language': 'en_US'
+      },
+    });
+    if(!user_response.ok) {
+      return null;
+    }
+    let user = await user_response.json();
+    return user.user;
+  } catch(err) {
+    // console.log(await err.json());
+    return null;
+  }
+}
+
+async function getTcx(logId) {
   let url = `https://api.fitbit.com/1/user/-/activities/${logId}.tcx`;
   let access_token = await getAccessToken();
   access_token = access_token.token;
@@ -183,13 +209,15 @@ export async function getTcx(logId) {
       'Accept-Language': 'en_US'
     },
   });
-  return await tcx.body;
+  return await tcx.blob();
 }
 
-export function createAuthLink() {
+function createAuthLink() {
   return "https://www.fitbit.com/oauth2/authorize?" +
   `response_type=code&client_id=${encodeURIComponent(FITBIT_CLIENT_ID)}` +
   `&redirect_uri=${encodeURIComponent(FITBIT_REDIRECT)}` +
   "&scope=activity%20heartrate%20location%20nutrition%20profile%20" +
   "settings%20sleep%20social%20weight&expires_in=604800";
 }
+
+export default {createAuthLink, getAccessRefresh, getAccessToken, getRefreshToken, refresh, activities, getTcx, getUser};

@@ -73,9 +73,9 @@ class ActivityRow extends Component {
         <CustomTableCell component="th" scope="row">
           {activity.activityName}
         </CustomTableCell>
-        <CustomTableCell align="right">{startTime}</CustomTableCell>
-        <CustomTableCell align="right">{duration}</CustomTableCell>
-        <CustomTableCell align="right">
+        <CustomTableCell>{startTime}</CustomTableCell>
+        <CustomTableCell>{duration}</CustomTableCell>
+        <CustomTableCell>
           {activity.distance ? activity.distance + " " + activity.distanceUnit : 'N/A'}
         </CustomTableCell>
         <CustomTableCell><UploadToStrava logId={activity.logId}/></CustomTableCell>
