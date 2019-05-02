@@ -30,6 +30,8 @@ class Activities extends Component {
         this.getActivityList = this.getActivityList.bind(this);
     }
 
+    abortController = new AbortController();
+
     async componentDidMount() {
         this.checkCode();
         //FITBIT
@@ -39,6 +41,10 @@ class Activities extends Component {
         let stravaTokens = await this.authenticateStrava();
 
         await this.getActivityList(fitbitTokens.access);
+    }
+
+    componentWillUnmount() {
+        this.abortController.abort();
     }
 
     async authenticateStrava() {
@@ -65,12 +71,12 @@ class Activities extends Component {
     async authenticateFitbit() {
         let accessToken = await FitbitService.getAccessToken();
         let refreshToken = await FitbitService.getRefreshToken();
-        let fitbitUser = await FitbitService.getUser(accessToken.token);
+        let fitbitUser = await FitbitService.getUser(accessToken.token, this.abortController.signal);
         if(!fitbitUser) {
             await FitbitService.refresh(refreshToken.token);
             accessToken = await FitbitService.getAccessToken();
             refreshToken = await FitbitService.getRefreshToken();
-            fitbitUser = await FitbitService.getUser(accessToken.token);
+            fitbitUser = await FitbitService.getUser(accessToken.token, this.abortController.signal);
         }
         if(!accessToken || !refreshToken) {
             let authLink = await FitbitService.createAuthLink();
@@ -84,8 +90,15 @@ class Activities extends Component {
     }
 
     async getActivityList(accessToken) {
-        let activityList = await FitbitService.activities(accessToken);
-        this.setState({ activityList: JSON.stringify(activityList), fitbitAuthState: "authorized"});
+        try{
+            let activityList = await FitbitService.activities(accessToken, this.abortController.signal);
+            this.setState({ activityList: JSON.stringify(activityList), fitbitAuthState: "authorized"});
+        } catch(err) {
+            if(err.name === 'AbortError') {
+                console.log('Aborted');
+                return;
+            }
+        }
     }
 
     async checkCode() {

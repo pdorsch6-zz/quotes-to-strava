@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actions from '../actions';
 
 import { withStyles } from '@material-ui/core/styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -7,6 +11,7 @@ import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
+import { updateQuote, deleteQuote } from '../utils/Utilities';
 
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, "../../", '.env') });
@@ -25,6 +30,7 @@ const styles = theme => ({
 });
 
 class ManipulateQuote extends Component {
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -37,13 +43,19 @@ class ManipulateQuote extends Component {
     }
 
     this.fillInputs = this.fillInputs.bind(this);
+    this.submit = this.submit.bind(this);
+    this.delete = this.delete.bind(this);
     this.onFieldChange = this.onFieldChange.bind(this);
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClickClose = this.handleClickClose.bind(this);
   }
 
   async componentDidMount() {
+    this._isMounted = true;
+  }
 
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   fillInputs() {
@@ -65,6 +77,31 @@ class ManipulateQuote extends Component {
       open: false,
     });
   };
+
+  async submit() {
+    let id = this.props.quote._id;
+    let { quote, author, category } = this.state;
+    await updateQuote(id, quote, author, category);
+    const { loadQuotes } = this.props.quotesActions;
+    await loadQuotes();
+    if(this._isMounted) {
+      this.setState({
+        open: false,
+      });
+    }
+  }
+
+  async delete() {
+    let id = this.props.quote._id;
+    await deleteQuote(id);
+    const { loadQuotes } = this.props.quotesActions;
+    await loadQuotes();
+    if(this._isMounted) {
+      this.setState({
+        open: false,
+      });
+    }
+  }
 
   onFieldChange(name, e) {
     this.setState({ [name]: e });
@@ -114,10 +151,10 @@ class ManipulateQuote extends Component {
             <Button onClick={this.handleClickClose} variant="contained">
               Cancel
             </Button>
-            <Button onClick={this.handleClickClose} color="secondary" variant="contained">
+            <Button onClick={this.delete} color="secondary" variant="contained">
               Delete
             </Button>
-            <Button onClick={this.uploadTcx} color="primary" variant="contained">
+            <Button onClick={this.submit} color="primary" variant="contained">
               Submit
             </Button>
           </DialogActions>
@@ -127,4 +164,23 @@ class ManipulateQuote extends Component {
   }
 }
 
-export default withStyles(styles)(ManipulateQuote);
+const mapStateToProps = state => {
+	return {
+		quotes: state.quotes.data,
+		loading: state.quotes.loading,
+		error: state.quotes.error,
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return { 
+    quotesActions: bindActionCreators({ ...actions.quotes }, dispatch),
+    quoteActions: bindActionCreators({ ...actions.quote }, dispatch),
+  }
+};
+
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(withStyles(styles)(ManipulateQuote)));
