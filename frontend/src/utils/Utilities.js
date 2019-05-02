@@ -1,7 +1,10 @@
 
-export async function fetchData(url, settings) {
+export async function fetchData(url, settings, signal) {
     if(!url) throw new Error('No url found');
     try {
+        if(signal) {
+            settings.signal = signal;
+        }
         let response = await fetch(url, settings);
 
         if(!response.ok) {
@@ -35,7 +38,7 @@ export async function createTcxFile(tcx, logId) {
     }
 }
 
-export async function randomQuote(tcx, logId) {
+export async function randomQuote() {
     try {
         let quoteResp = await fetch(`/api/quote/random`, {
             method: 'GET',
@@ -59,4 +62,51 @@ export async function randomQuote(tcx, logId) {
         return null;
     }
 }
+
+export async function updateQuote(id, quote, author, category) {
+    let authorResponse = await fetch(`/api/author`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: author
+        })
+    });
+
+    let categoryResponse = await fetch(`/api/category`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            category: category
+        })
+    });
+
+    let categoryJson = await categoryResponse.json();
+    let authorJson = await authorResponse.json();
+
+    await fetch(`/api/quote/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            quote: quote,
+            author: authorJson.author._id,
+            category: categoryJson.category._id
+        })
+    });
+}
+
+export async function deleteQuote(id) {
+    await fetch(`/api/quote/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+    });
+}
+
   

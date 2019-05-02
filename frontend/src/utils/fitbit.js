@@ -143,7 +143,7 @@ async function refresh(refresh_token) {
   }
 }
 
-async function activities(access_token) {
+async function activities(access_token, signal) {
   try {
     let url = new URL("https://api.fitbit.com/1/user/-/activities/list.json"),
       params = {
@@ -162,7 +162,7 @@ async function activities(access_token) {
           'Authorization': `Bearer ${access_token}`,
           'Accept-Language': 'en_US'
         },
-      });
+      }, signal);
       activities.activities.forEach(function(activity) {
         fullActivityList.push(activity);
       });
@@ -175,7 +175,7 @@ async function activities(access_token) {
   }
 }
 
-async function getUser(access_token) {
+async function getUser(access_token, signal) {
   try {
     let url = "https://api.fitbit.com/1/user/-/profile.json";
     let user_response = await fetch(url, {
@@ -185,6 +185,7 @@ async function getUser(access_token) {
         'Authorization': `Bearer ${access_token}`,
         'Accept-Language': 'en_US'
       },
+      signal: signal
     });
     if(!user_response.ok) {
       return null;
