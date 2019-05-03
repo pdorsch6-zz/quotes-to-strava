@@ -208,7 +208,7 @@ async function uploadTcx(tcx, title, description) {
     return response;
   } catch(err) {
     console.log(err);
-    return null;
+    return err;
   }
 }
 

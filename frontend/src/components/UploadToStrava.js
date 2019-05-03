@@ -6,6 +6,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+import CustomSnackbar from './CustomSnackbar';
 
 import FitbitService from '../utils/fitbit';
 import StravaService from '../utils/strava';
@@ -25,6 +28,9 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
   },
+  white: {
+    color: 'white'
+  }
 });
 
 class UploadToStrava extends Component {
@@ -38,7 +44,11 @@ class UploadToStrava extends Component {
       open: false,
       uploadError: "",
       title: "",
-      description: ""
+      description: "",
+      pending: false,
+      snackbarOpen: false,
+      snackbarStyle: 'success',
+      snackbarMessage: ''
     }
 
     this.randomQuote = this.randomQuote.bind(this);
@@ -46,6 +56,8 @@ class UploadToStrava extends Component {
     this.onFieldChange = this.onFieldChange.bind(this);
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClickClose = this.handleClickClose.bind(this);
+    this.closeSnackbar = this.closeSnackbar.bind(this);
+    this.openSnackbar = this.openSnackbar.bind(this);
   }
 
   async componentDidMount() {
@@ -57,8 +69,21 @@ class UploadToStrava extends Component {
   async uploadTcx() {
     if(this.validateToken()) {
       let { logId, title, description } = this.state;
-      let tcx = await FitbitService.getTcx(logId);
-      await StravaService.uploadTcx(tcx, title, description);
+      this.setState({pending: true});
+      try{
+        let tcx = await FitbitService.getTcx(logId);
+        let strava_response = await StravaService.uploadTcx(tcx, title, description);
+        this.setState({pending: false});
+        if(strava_response.ok) {
+          this.openSnackbar('success', "Uploaded to Strava!" );
+        } else {
+          let error = await strava_response.json();
+          this.openSnackbar('error', "Error: " + error.error );
+        }
+      } catch(err) {
+        this.openSnackbar('error', "Error: " + err );
+        this.setState({pending: false});
+      }
       this.handleClickClose();
     } else {
       this.setState({uploadError: "Incorrect validation token"});
@@ -88,13 +113,21 @@ class UploadToStrava extends Component {
     });
   };
 
+  closeSnackbar = () => {
+    this.setState({ snackbarOpen: false });
+  };
+
+  openSnackbar = (variant, message) => {
+    this.setState({ snackbarOpen: true, snackbarStyle: variant, snackbarMessage: message });
+  };
+
   onFieldChange(name, e) {
     this.setState({ [name]: e });
   }
 
   render() {
     const { classes } = this.props;
-    let { uploadError, title, description, token } = this.state;
+    let { uploadError, title, description, token, pending, snackbarMessage, snackbarStyle, snackbarOpen } = this.state;
     return (
       <>
       <Button variant="contained" color="primary" onClick={this.handleClickOpen}>
@@ -143,11 +176,26 @@ class UploadToStrava extends Component {
           <Button onClick={this.handleClickClose} color="secondary" variant="contained">
             Cancel
           </Button>
-          <Button onClick={this.uploadTcx} color="primary" variant="contained">
-            Upload
+          <Button onClick={this.uploadTcx} color="primary" variant="contained" className={classes.white}>
+            {pending ? <CircularProgress color="inherit" /> : 'Upload'}
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={this.closeSnackbar}
+        >
+        <CustomSnackbar
+          onClose={this.closeSnackbar}
+          variant={snackbarStyle}
+          message={snackbarMessage}
+        />
+        </Snackbar>
       </>
     );
   }
