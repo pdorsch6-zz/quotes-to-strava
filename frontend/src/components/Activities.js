@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import FitbitService from '../utils/fitbit';
 import StravaService from '../utils/strava';
 import ActivityTable from "./ActivityTable";
@@ -130,7 +131,7 @@ class Activities extends Component {
                 { activityList ?
                   <ActivityTable activityList={activityList}/>
                     :
-                  ""
+                  <CircularProgress />
                 }
             </div>
         );

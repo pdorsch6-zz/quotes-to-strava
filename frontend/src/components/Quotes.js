@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import * as actions from '../actions';
 import AddQuote from './AddQuote';
@@ -40,8 +41,8 @@ class Quotes extends Component {
           <div>
             {quotes ?
               <QuoteTable />
-              // quotes.map((quote, index) => <li key={index}> {quote.quote}  </li> )
-              : <p>Loading...</p>
+              : 
+              <CircularProgress />
             }
           </div>
           <br />

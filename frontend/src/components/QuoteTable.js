@@ -43,22 +43,23 @@ class QuoteTable extends Component {
 
     render() {
         let quotes = this.props.quotes;
+        const { classes } = this.props;
         return (
-            <Paper>
-            <Table>
-                <TableHead>
-                <TableRow>
-                    <CustomTableCell>Quote</CustomTableCell>
-                    <CustomTableCell align="right">Author</CustomTableCell>
-                    <CustomTableCell align="right">Category</CustomTableCell>
-                    <CustomTableCell> </CustomTableCell>
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                    {quotes.map((quote, index) => <QuoteRow quote={quote} key={index} /> )}
-                </TableBody>
+          <Paper className={classes.root}>
+            <Table className={classes.table}>
+              <TableHead>
+              <TableRow>
+                  <CustomTableCell>Quote</CustomTableCell>
+                  <CustomTableCell align="right">Author</CustomTableCell>
+                  <CustomTableCell align="right">Category</CustomTableCell>
+                  <CustomTableCell> </CustomTableCell>
+              </TableRow>
+              </TableHead>
+              <TableBody>
+                  {quotes.map((quote, index) => <QuoteRow quote={quote} key={index} /> )}
+              </TableBody>
             </Table>
-            </Paper>
+          </Paper>
         );
     }
 }

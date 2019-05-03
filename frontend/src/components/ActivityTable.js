@@ -40,9 +40,10 @@ class ActivityTable extends Component {
   render() {
     let activityList = this.props.activityList;
     let activityJson = activityList ? JSON.parse(activityList) : [];
+    const { classes } = this.props;
     return (
-      <Paper>
-        <Table>
+        <Paper className={classes.root}>
+          <Table className={classes.table}>
           <TableHead>
             <TableRow>
               <CustomTableCell>Activity</CustomTableCell>

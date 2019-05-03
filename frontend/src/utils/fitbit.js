@@ -147,7 +147,7 @@ async function activities(access_token, signal) {
   try {
     let url = new URL("https://api.fitbit.com/1/user/-/activities/list.json"),
       params = {
-        afterDate: '2019-04-28',
+        afterDate: '2019-01-01',
         sort: 'desc',
         limit: 20,
         offset: 0
@@ -164,13 +164,16 @@ async function activities(access_token, signal) {
         },
       }, signal);
       activities.activities.forEach(function(activity) {
-        fullActivityList.push(activity);
+        if(activity.distance > 0) {
+          fullActivityList.push(activity);
+        }
       });
       url = activities.pagination.next || null;
-    } while (url);
+    } while (fullActivityList.length < 8 && url);
 
     return fullActivityList;
   } catch(err) {
+    console.log(err);
     return [];
   }
 }
