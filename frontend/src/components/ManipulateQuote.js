@@ -10,6 +10,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 
 import { updateQuote, deleteQuote } from '../utils/Utilities';
 
@@ -26,6 +28,10 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
+  },
+  edit: {
+    margin: '0px',
+    padding: '5px',
   },
 });
 
@@ -112,9 +118,12 @@ class ManipulateQuote extends Component {
     let { quote, author, category } = this.state;
     return (
       <>
-        <Button variant="contained" color="primary" onClick={this.handleClickOpen}>
-          Edit
-        </Button>
+        <IconButton aria-label="Edit" className={classes.edit} onClick={this.handleClickOpen}>
+          <EditIcon fontSize="small" />
+        </IconButton>
+        {/* <Button variant="contained" onClick={this.handleClickOpen}>
+          <i class="fas fa-edit"></i>
+        </Button> */}
         <Dialog open={this.state.open} onClose={this.handleClickClose} aria-labelledby="simple-dialog-title">
           <DialogTitle id="dialog-title">Edit</DialogTitle>
           <form className={classes.container} noValidate>

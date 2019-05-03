@@ -1,15 +1,35 @@
 import React, { Component } from "react";
-import Button from '@material-ui/core/Button';
+
+import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FitbitService from '../utils/fitbit';
 import StravaService from '../utils/strava';
-import ActivityTable from "./ActivityTable";
+import ActivityGrid from "./ActivityGrid";
+import Grid from '@material-ui/core/Grid';
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, "../../", '.env') });
 
-const FITBIT_REDIRECT = process.env.FITBIT_REDIRECT;
-const FITBIT_CLIENT_ID = process.env.FITBIT_CLIENT_ID;
 
+const styles = theme => ({
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      padding: theme.spacing.unit * 2,
+      color: theme.palette.text.primary,
+      fontFamily: 'Montserrat, sans-serif',
+      fontSize: '10px'
+    },
+    right: {
+      textAlign: 'right'
+    },
+    left: {
+      textAlign: 'left'
+    },
+    bold: {
+      fontWeight: 'bold'
+    }
+  });
 
 class Activities extends Component {
 
@@ -116,20 +136,19 @@ class Activities extends Component {
 
     render() {
         let { authLink, activityList, stravaAuthLink, fitbitUser, stravaUser } = this.state;
+        const { classes } = this.props;
         return (
             <div>
-                <div>
-                    <span style={{float: 'left'}}>
-                    {fitbitUser ? `Fitbit: ${fitbitUser.fullName}` : <a href={ authLink }>Authorize Fitbit</a>}
-                    </span>
-                    <span style={{float: 'right'}}>
-                    {stravaUser ? `Strava: ${stravaUser.firstname} ${stravaUser.lastname}` : <a href={ stravaAuthLink }>Authorize Strava</a>}
-                    </span>
-                </div>
-                <br/>
-                <hr/>
+                <Grid container spacing={24} className={classes.paper}>
+                    <Grid item xs={6} className={classes.left}>
+                        {fitbitUser ? `Fitbit: ${fitbitUser.fullName}` : <a href={ authLink }>Authorize Fitbit</a>}
+                    </Grid>
+                    <Grid item xs={6} className={classes.right}>
+                        {stravaUser ? `Strava: ${stravaUser.firstname} ${stravaUser.lastname}` : <a href={ stravaAuthLink }>Authorize Strava</a>}
+                    </Grid>
+                </Grid>
                 { activityList ?
-                  <ActivityTable activityList={activityList}/>
+                  <ActivityGrid activityList={activityList}/>
                     :
                   <CircularProgress />
                 }
@@ -138,4 +157,4 @@ class Activities extends Component {
     }
 }
 
-export default Activities;
+export default withStyles(styles)(Activities);

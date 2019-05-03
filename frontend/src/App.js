@@ -14,10 +14,10 @@ const styles = theme => ({
     flexGrow: 1,
   },
   paper: {
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing.unit,
     textAlign: 'center',
-    color: theme.palette.text.secondary,
-    margin: '10px 40px',
+    color: theme.palette.text.primary,
+    margin: '10px 20px',
   },
   base: {
     backgroundColor: '#eee',
