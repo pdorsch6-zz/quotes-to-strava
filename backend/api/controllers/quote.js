@@ -3,6 +3,26 @@ const Category = require('mongoose').model('QuoteCategory');
 const Author = require('mongoose').model('Author');
 
 module.exports.getAll = (req, res) => {
+    Quote.find({
+        "deleted": {$eq: false}
+    })
+        .populate(['category', 'author'])
+        .then(quotes => {
+            return res.status(200).json({
+                status: 'ok',
+                quotes: quotes ? quotes : [],
+            });
+        })
+        .catch(err => {
+            return res.status(500).json({
+                status: 'error',
+                error: err,
+                message: 'An unexpected internal server error has occurred!',
+            });
+        });
+};
+
+module.exports.getFullList = (req, res) => {
     Quote.find({})
         .populate(['category', 'author'])
         .then(quotes => {
@@ -125,13 +145,44 @@ module.exports.update = (req, res) => {
             });
         });
 }
+module.exports.markQuoteAsDeleted = (req, res) => {
+    Quote.findById(req.params.id)
+        .then(async quote => {
+            if (!quote) {
+                return res.status(404).json({
+                    status: 'error',
+                    message: 'Quote not found'
+                });
+            }
+
+            quote.deleted = true;
+
+            const updated = await quote.save();
+
+            return res.status(200).json({
+                status: 'ok',
+                quote: updated
+            });
+
+        }).catch(err => {
+            return res.status(500).json({
+                status: 'error',
+                error: err,
+                message: 'An unexpected internal server error has occurred!',
+            });
+        });
+}
 
 module.exports.getRandom = (req, res) => {
-    Quote.countDocuments().then(count => {
+    Quote.countDocuments({
+        "deleted": {$eq: false}
+    }).then(count => {
 
         var random = Math.floor(Math.random() * count)
 
-        Quote.findOne().skip(random)
+        Quote.findOne({
+            "deleted": {$eq: false}
+            }).skip(random)
             .populate(['category', 'author'])
             .then(result => {
                 return res.status(200).json({

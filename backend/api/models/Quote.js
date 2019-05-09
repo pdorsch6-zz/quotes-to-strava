@@ -17,6 +17,11 @@ const Quote = new Schema(
       ref: 'Author',
       required: false
     },
+    deleted: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
     date_added: { type: Date, default: Date.now }
   },
   

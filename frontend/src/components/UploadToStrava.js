@@ -12,7 +12,8 @@ import CustomSnackbar from './CustomSnackbar';
 
 import FitbitService from '../utils/fitbit';
 import StravaService from '../utils/strava';
-import { createTcxFile, randomQuote } from '../utils/Utilities';
+import { randomQuote, markQuoteAsDeleted } from '../utils/Utilities';
+import { quote } from '../actions';
 
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, "../../", '.env') });
@@ -44,6 +45,7 @@ class UploadToStrava extends Component {
       open: false,
       uploadError: "",
       title: "",
+      quoteId: "",
       description: "",
       pending: false,
       snackbarOpen: false,
@@ -68,7 +70,7 @@ class UploadToStrava extends Component {
 
   async uploadTcx() {
     if(this.validateToken()) {
-      let { logId, title, description } = this.state;
+      let { logId, title, description, quoteId } = this.state;
       this.setState({pending: true});
       try{
         let tcx = await FitbitService.getTcx(logId);
@@ -76,6 +78,7 @@ class UploadToStrava extends Component {
         this.setState({pending: false});
         if(strava_response.ok) {
           this.openSnackbar('success', "Uploaded to Strava!" );
+          await markQuoteAsDeleted(quoteId);
         } else {
           let error = await strava_response.json();
           this.openSnackbar('error', "Error: " + error.error );
@@ -91,9 +94,9 @@ class UploadToStrava extends Component {
   }
 
   async randomQuote() {
-    let title = await randomQuote();
+    let { quoteString, id } = await randomQuote();
 
-    this.setState({title});
+    this.setState({ title: quoteString, quoteId: id });
   }
 
   validateToken() {

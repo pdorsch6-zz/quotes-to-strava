@@ -49,6 +49,7 @@ export async function randomQuote() {
         let quoteJson = (await quoteResp.json()).quote;
         let quote = quoteJson.quote;
         let author = quoteJson.author.name;
+        let id = quoteJson._id;
         author = author.toLowerCase()
         .split(' ')
         .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
@@ -56,7 +57,7 @@ export async function randomQuote() {
         
         let quoteString = `"${quote}" - ${author}`;
 
-        return quoteString;
+        return { quoteString, id };
     } catch(err) {
         console.log(err);
         return null;
@@ -109,4 +110,59 @@ export async function deleteQuote(id) {
     });
 }
 
+export async function markQuoteAsDeleted(id) {
+    await fetch(`/api/quote/delete/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+    });
+}
+
+export async function similar(quote) {
+    let quotes = await fetch(`/api/quote/all-plus-deleted`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+    let quoteJson = (await quotes.json()).quotes;
+    for(let element of quoteJson) {
+        let similarity = levenshtein(quote, element.quote);
+        if (similarity < 10) {
+            return element.quote;
+        }
+    }
+}
+
+function levenshtein(a, b) {
+    if(!a.length) return b.length;
+    if(!b.length) return a.length;
+
+    let map = [];
+
+    for(let i = 0; i < a.length + 1; i++) {
+        map[i] = [];
+        for(let j = 0; j < b.length + 1; j++) {
+            if(i == 0 && j == 0) {
+                map[i][j] = 0;
+            } else if (i == 0) {
+                map[i][j] = map[i][j-1] + 1;
+            } else if (j == 0) {
+                map[i][j] = map[i-1][j] + 1;
+            } else {
+                let diag = map[i-1][j-1];
+                let left = map[i-1][j];
+                let up = map[i][j-1];
+
+                if(a.charAt(i - 1) === b.charAt(j - 1)) {
+                    map[i][j] = diag;
+                } else {
+                    map[i][j] = Math.min(diag, left, up) + 1;
+                }
+            }
+        }
+    }
+    return map[a.length][b.length];
+}
   
