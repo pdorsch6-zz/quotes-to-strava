@@ -66,7 +66,6 @@ class UploadToStrava extends Component {
     let logId = this.props.logId;
     this.setState({logId});
     await this.randomQuote();
-    console.log(this.state.quoteId);
   }
 
   async uploadTcx() {
@@ -98,6 +97,7 @@ class UploadToStrava extends Component {
     let { quoteString, id } = await randomQuote();
 
     this.setState({ title: quoteString, quoteId: id });
+    console.log(this.state.quoteId);
   }
 
   validateToken() {

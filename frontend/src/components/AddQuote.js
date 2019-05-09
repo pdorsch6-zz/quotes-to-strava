@@ -13,6 +13,9 @@ import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
 import CustomSnackbar from './CustomSnackbar';
 
+import { similar } from '../utils/Utilities';
+
+
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -79,7 +82,11 @@ class AddQuote extends Component {
     async addQuote() {
         let { quote, author, category } = this.state;
 
-        this.handleClickClose();
+        let similar = await similar(quote);
+
+        // if (similar) {
+        //   console.log()
+        // }
 
         try {
             let authorResponse = await fetch(`/api/author`, {
@@ -123,6 +130,7 @@ class AddQuote extends Component {
                 if (quoteResponse.status === 200) {
                   this.updateQuotes();
                   this.openSnackbar('success', "Quote added!" );
+                  this.handleClickClose();
                 }
             }
         } catch (e) {
