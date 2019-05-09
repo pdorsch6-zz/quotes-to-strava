@@ -49,6 +49,7 @@ export async function randomQuote() {
         let quoteJson = (await quoteResp.json()).quote;
         let quote = quoteJson.quote;
         let author = quoteJson.author.name;
+        let id = quoteJson._id;
         author = author.toLowerCase()
         .split(' ')
         .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
@@ -56,7 +57,7 @@ export async function randomQuote() {
         
         let quoteString = `"${quote}" - ${author}`;
 
-        return quoteString;
+        return { quoteString, id };
     } catch(err) {
         console.log(err);
         return null;
