@@ -12,7 +12,7 @@ import CustomSnackbar from './CustomSnackbar';
 
 import FitbitService from '../utils/fitbit';
 import StravaService from '../utils/strava';
-import { randomQuote, deleteQuote } from '../utils/Utilities';
+import { randomQuote, markQuoteAsDeleted } from '../utils/Utilities';
 import { quote } from '../actions';
 
 const path = require('path');
@@ -78,7 +78,7 @@ class UploadToStrava extends Component {
         this.setState({pending: false});
         if(strava_response.ok) {
           this.openSnackbar('success', "Uploaded to Strava!" );
-          await deleteQuote(quoteId);
+          await markQuoteAsDeleted(quoteId);
         } else {
           let error = await strava_response.json();
           this.openSnackbar('error', "Error: " + error.error );

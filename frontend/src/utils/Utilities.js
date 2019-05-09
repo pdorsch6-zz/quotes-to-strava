@@ -110,20 +110,29 @@ export async function deleteQuote(id) {
     });
 }
 
+export async function markQuoteAsDeleted(id) {
+    await fetch(`/api/quote/delete/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+    });
+}
+
 export async function similar(quote) {
-    let quotes = await fetch(`/api/quote/all`, {
+    let quotes = await fetch(`/api/quote/all-plus-deleted`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
         },
     });
     let quoteJson = (await quotes.json()).quotes;
-    quoteJson.forEach(element => {
+    for(let element of quoteJson) {
         let similarity = levenshtein(quote, element.quote);
-        if (similarity < 20) {
-            return true;
+        if (similarity < 10) {
+            return element.quote;
         }
-    });
+    }
 }
 
 function levenshtein(a, b) {

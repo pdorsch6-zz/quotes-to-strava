@@ -25,6 +25,12 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
   },
+  paper: {
+    padding: theme.spacing.unit * 2,
+    textAlign: 'center',
+    color: theme.palette.text.primary,
+    fontFamily: 'Montserrat, sans-serif',
+  },
 });
 
 class AddQuote extends Component {
@@ -39,9 +45,12 @@ class AddQuote extends Component {
       open: false,
       snackbarOpen: false,
       snackbarStyle: 'success',
-      snackbarMessage: ''
+      snackbarMessage: '',
+      openSimilarDialog: false,
+      similarQuote: ""
 		};
         this.addQuote = this.addQuote.bind(this);
+        this.checkSimilarity = this.checkSimilarity.bind(this);
         this.onFieldChange = this.onFieldChange.bind(this);
         this.closeSnackbar = this.closeSnackbar.bind(this);
         this.openSnackbar = this.openSnackbar.bind(this);
@@ -53,10 +62,17 @@ class AddQuote extends Component {
         open: true,
       });
     };
+
+    handleClickOpenSimilar = () => {
+      this.setState({
+        openSimilarDialog: true,
+      });
+    };
   
     handleClickClose = () => {
       this.setState({
         open: false,
+        openSimilarDialog: false,
       });
     };
 
@@ -77,71 +93,70 @@ class AddQuote extends Component {
       loadQuotes();
     }
 
-    
+    async checkSimilarity() {
+      let similarQuote = await similar(this.state.quote);
+      if (similarQuote) {
+        this.setState({similarQuote, openSimilarDialog: true});
+      } else {
+        await addQuote();
+      }
+    }
 
     async addQuote() {
-        let { quote, author, category } = this.state;
+      let { quote, author, category } = this.state;
+      try {
+        let authorResponse = await fetch(`/api/author`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: author
+            })
+        });
 
-        let similar = await similar(quote);
+        let categoryResponse = await fetch(`/api/category`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                category: category
+            })
+        });
 
-        // if (similar) {
-        //   console.log()
-        // }
+        let categoryJson = await categoryResponse.json();
+        let authorJson = await authorResponse.json();
 
-        try {
-            let authorResponse = await fetch(`/api/author`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: author
-                })
-            });
-
-            let categoryResponse = await fetch(`/api/category`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    category: category
-                })
-            });
-
-            let categoryJson = await categoryResponse.json();
-            let authorJson = await authorResponse.json();
-
-            if ((authorResponse.status === 200 ||
-                authorResponse.status === 400) &&
-                (categoryResponse.status === 200 ||
-                categoryResponse.status === 400)) {
-                let quoteResponse = await fetch(`/api/quote`, {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        category: categoryJson.category._id,
-                        author: authorJson.author._id,
-                        quote: quote
-                    })
-                });
-                if (quoteResponse.status === 200) {
-                  this.updateQuotes();
-                  this.openSnackbar('success', "Quote added!" );
-                  this.handleClickClose();
-                }
-            }
-        } catch (e) {
-          this.openSnackbar('error', "Error: " + e );
+        if ((authorResponse.status === 200 ||
+          authorResponse.status === 400) &&
+          (categoryResponse.status === 200 ||
+          categoryResponse.status === 400)) {
+          let quoteResponse = await fetch(`/api/quote`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  category: categoryJson.category._id,
+                  author: authorJson.author._id,
+                  quote: quote
+              })
+          });
+          if (quoteResponse.status === 200) {
+            this.updateQuotes();
+            this.openSnackbar('success', "Quote added!" );
+            this.handleClickClose();
+          }
         }
-        
+      } catch (e) {
+        this.openSnackbar('error', "Error: " + e );
+      }
     }
 
     render() {
         const { classes } = this.props;
-        const { snackbarMessage, snackbarStyle, snackbarOpen } = this.state;
+        const { snackbarMessage, snackbarStyle, snackbarOpen, quote, similarQuote } = this.state;
         return (
         <div>
           <Button variant="contained" color="primary" onClick={this.handleClickOpen}>
@@ -183,7 +198,7 @@ class AddQuote extends Component {
               <Button onClick={this.handleClickClose} color="secondary" variant="contained">
                 Cancel
               </Button>
-              <Button onClick={this.addQuote} color="primary" variant="contained">
+              <Button onClick={this.checkSimilarity} color="primary" variant="contained">
                 Submit
               </Button>
             </DialogActions>
@@ -203,6 +218,27 @@ class AddQuote extends Component {
                 message={snackbarMessage}
               />
             </Snackbar>
+
+
+            {/* similar dialog */}
+            <Dialog open={this.state.openSimilarDialog} onClose={this.handleClickClose} aria-labelledby="simple-dialog-title">
+            <DialogTitle id="dialog-title">
+              Are you sure you would like to submit this quote?
+            </DialogTitle>
+              <div className={classes.paper}>*NEW* {quote}</div>
+
+              <p className={classes.paper}>is very similar to</p>
+
+              <div className={classes.paper}>*EXISTS* {similarQuote}</div>
+            <DialogActions>
+              <Button onClick={this.handleClickClose} color="secondary" variant="contained">
+                Cancel
+              </Button>
+              <Button onClick={this.addQuote} color="primary" variant="contained">
+                Submit
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
         );
     }
