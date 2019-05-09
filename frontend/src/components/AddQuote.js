@@ -98,7 +98,7 @@ class AddQuote extends Component {
       if (similarQuote) {
         this.setState({similarQuote, openSimilarDialog: true});
       } else {
-        await addQuote();
+        await this.addQuote();
       }
     }
 

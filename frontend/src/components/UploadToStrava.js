@@ -97,7 +97,6 @@ class UploadToStrava extends Component {
     let { quoteString, id } = await randomQuote();
 
     this.setState({ title: quoteString, quoteId: id });
-    console.log(this.state.quoteId);
   }
 
   validateToken() {
